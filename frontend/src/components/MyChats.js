@@ -10,6 +10,7 @@ import { Button } from "@chakra-ui/react";
 import { ChatState } from "../Context/ChatProvider";
 
 const MyChats = ({ fetchAgain }) => {
+  const API_BASE_URL = process.env.REACT_APP_API_BASE_URL;
   const [loggedUser, setLoggedUser] = useState();
 
   const { selectedChat, setSelectedChat, user, chats, setChats } = ChatState();
@@ -17,7 +18,7 @@ const MyChats = ({ fetchAgain }) => {
   const toast = useToast();
 
   const fetchChats = async () => {
-    // console.log(user._id);
+    console.log("User: ", user);
     try {
       const config = {
         headers: {
@@ -25,9 +26,10 @@ const MyChats = ({ fetchAgain }) => {
         },
       };
 
-      const { data } = await axios.get("/api/chat", config);
+      const { data } = await axios.get(API_BASE_URL+"/api/chat", config);
       setChats(data);
     } catch (error) {
+      console.error("Failed to load chat error: ", error, );
       toast({
         title: "Error Occured!",
         description: "Failed to Load the chats",

@@ -9,6 +9,7 @@ import { useHistory } from "react-router-dom";
 import { ChatState } from "../../Context/ChatProvider";
 
 const Login = () => {
+  const API_BASE_URL = process.env.REACT_APP_API_BASE_URL;
   const [show, setShow] = useState(false);
   const handleClick = () => setShow(!show);
   const toast = useToast();
@@ -41,7 +42,7 @@ const Login = () => {
       };
 
       const { data } = await axios.post(
-        "/api/user/login",
+        API_BASE_URL+"/api/user/login",
         { email, password },
         config
       );
@@ -60,7 +61,7 @@ const Login = () => {
     } catch (error) {
       toast({
         title: "Error Occured!",
-        description: error.response.data.message,
+        description: error.response?.data?.message,
         status: "error",
         duration: 5000,
         isClosable: true,

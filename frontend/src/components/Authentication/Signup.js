@@ -8,6 +8,8 @@ import { useState } from "react";
 import { useHistory } from "react-router";
 
 const Signup = () => {
+  const API_BASE_URL = process.env.REACT_APP_API_BASE_URL;
+  console.log(API_BASE_URL)
   const [show, setShow] = useState(false);
   const handleClick = () => setShow(!show);
   const toast = useToast();
@@ -51,7 +53,7 @@ const Signup = () => {
         },
       };
       const { data } = await axios.post(
-        "/api/user",
+        API_BASE_URL+"/api/user",
         {
           name,
           email,
@@ -72,6 +74,7 @@ const Signup = () => {
       setPicLoading(false);
       history.push("/chats");
     } catch (error) {
+      console.log(error)
       toast({
         title: "Error Occured!",
         description: error.response.data.message,

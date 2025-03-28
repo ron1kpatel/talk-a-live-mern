@@ -5,8 +5,22 @@ const generateToken = require("../config/generateToken");
 //@description     Get or Search all users
 //@route           GET /api/user?search=
 //@access          Public
+// const allUsers = asyncHandler(async (req, res) => {
+//   const keyword = req.query.search
+//     ? {
+//         $or: [
+//           { name: { $regex: req.query.search, $options: "i" } },
+//           { email: { $regex: req.query.search, $options: "i" } },
+//         ],
+//       }
+//     : {};
+
+//   const users = await User.find(keyword).find({ _id: { $ne: req.user._id } });
+//   res.send(users);
+// });
+
 const allUsers = asyncHandler(async (req, res) => {
-  const keyword = req.query.search
+  const searchQuery = req.query.search
     ? {
         $or: [
           { name: { $regex: req.query.search, $options: "i" } },
@@ -15,8 +29,21 @@ const allUsers = asyncHandler(async (req, res) => {
       }
     : {};
 
-  const users = await User.find(keyword).find({ _id: { $ne: req.user._id } });
-  res.send(users);
+  try {
+    // Combine search and "not current user" in one filter
+    const users = await User.find({
+      $and: [
+        searchQuery,
+        { _id: { $ne: req.user._id } }, // exclude logged-in user
+      ],
+    }).select("-password"); // Don't return password
+
+    console.log("user: ", users);
+    res.status(200).json(users);
+  } catch (error) {
+    console.error("User Search Failed:", error);
+    res.status(500).json({ message: "Failed to fetch users" });
+  }
 });
 
 //@description     Register new user
