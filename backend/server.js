@@ -55,8 +55,13 @@ const server = app.listen(
 const io = require("socket.io")(server, {
   pingTimeout: 60000,
   cors: {
-    origin: "http://localhost:3000",
+    // origin: "http://localhost:3000", uncomment this in localhost
     // credentials: true,
+
+
+    origin: "https://talk-a-live-mern.vercel.app",
+    methods: ["GET", "POST"],
+    credentials: true,
   },
 });
 
